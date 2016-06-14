@@ -32,7 +32,15 @@ class Minefield
   # Check if all cells that don't have mines have been uncovered. This is the
   # condition used to see if the player has won the game.
   def all_cells_cleared?
-    false
+    cleared_cells = true
+    @board.each do |row|
+      row.each do |column|
+        if column.contains_mine?
+          cleared_cells = false
+        end
+      end
+    end
+    cleared_cells
   end
 
   # Returns the number of mines that are surrounding this cell (maximum of 8).
@@ -42,7 +50,7 @@ class Minefield
 
   # Returns true if the given cell contains a mine, false otherwise.
   def contains_mine?(row, col)
-    false
+    @minefield[row][col].contains_mine?
   end
 
   private
