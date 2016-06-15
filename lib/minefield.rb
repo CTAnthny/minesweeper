@@ -1,4 +1,4 @@
-require_relative "cell"
+require_relative "helper.rb"
 
 class Minefield
   attr_reader :row_count, :column_count
@@ -23,22 +23,46 @@ class Minefield
   def clear(row, col)
     @minefield[row][col].reveal!
 
-    if on_board?(row - 1, col) && !contains_mine?(row - 1, col)
-      @minefield[row - 1][col].reveal!
-    elsif on_board?(row + 1, col) && !contains_mine?(row + 1, col)
-      @minefield[row + 1][col].reveal!
-    elsif on_board?(row, col - 1) && !contains_mine?(row, col - 1)
-      @minefield[row][col - 1].reveal!
-    elsif on_board?(row, col + 1) && !contains_mine?(row, col + 1)
-      @minefield[row][col + 1].reveal!
-    elsif on_board?(row - 1, col - 1) && !contains_mine?(row - 1, col - 1)
-      @minefield[row - 1][col - 1].reveal!
-    elsif on_board?(row + 1, col + 1) && !contains_mine?(row + 1, col + 1)
-      @minefield[row + 1][col + 1].reveal!
-    elsif on_board?(row - 1, col + 1) && !contains_mine?(row - 1, col + 1)
-      @minefield[row - 1][col + 1].reveal!
-    elsif on_board?(row + 1, col - 1) && !contains_mine?(row + 1, col - 1)
-      @minefield[row + 1][col - 1].reveal!
+    if on_board?(row - 1, col)
+      if !contains_mine?(row - 1, col)
+        @minefield[row - 1][col].reveal!
+        self.adjacent_mines(row - 1, col)
+      end
+    elsif on_board?(row + 1, col)
+      if !contains_mine?(row + 1, col)
+        @minefield[row + 1][col].reveal!
+        self.adjacent_mines(row + 1, col)
+      end
+    elsif on_board?(row, col - 1)
+      if !contains_mine?(row, col - 1)
+        @minefield[row][col - 1].reveal!
+        self.adjacent_mines(row, col - 1)
+      end
+    elsif on_board?(row, col + 1)
+      if !contains_mine?(row, col + 1)
+        @minefield[row][col + 1].reveal!
+        self.adjacent_mines(row, col + 1)
+      end
+    elsif on_board?(row - 1, col - 1)
+      if !contains_mine?(row - 1, col - 1)
+        @minefield[row - 1][col - 1].reveal!
+        self.adjacent_mines(row - 1, col - 1)
+      end
+    elsif on_board?(row + 1, col + 1)
+      if !contains_mine?(row + 1, col + 1)
+        @minefield[row + 1][col + 1].reveal!
+        self.adjacent_mines(row + 1, col + 1)
+      end
+    elsif on_board?(row - 1, col + 1)
+      if !contains_mine?(row - 1, col + 1)
+        @minefield[row - 1][col + 1].reveal!
+        self.adjacent_mines(row - 1, col + 1)
+      end
+    elsif on_board?(row + 1, col - 1)
+      if !contains_mine?(row + 1, col - 1)
+        @minefield[row + 1][col - 1].reveal!
+        self.adjacent_mines(row + 1, col - 1)
+      end
     end
 
     # dev diagram
@@ -48,14 +72,14 @@ class Minefield
   end
 
   def on_board?(row, col)
-    return row >= 0 && row <= 20 && col >= 0 col <= 20
+    return row >= 0 && row <= 20 && col >= 0 && col <= 20
   end
 
   # Check if any cells have been uncovered that also contained a mine. This is
   # the condition used to see if the player has lost the game.
   def any_mines_detonated?
     cells_detonated = false
-    @board.each do |row|
+    @minefield.each do |row|
       row.each do |column|
         if column.contains_mine? && column.revealed?
           cells_detonated = true
@@ -69,7 +93,7 @@ class Minefield
   # condition used to see if the player has won the game.
   def all_cells_cleared?
     cleared_cells = true
-    @board.each do |row|
+    @minefield.each do |row|
       row.each do |column|
         if column.contains_mine?
           cleared_cells = false
@@ -83,22 +107,38 @@ class Minefield
   def adjacent_mines(row, col)
     adjacent_mine_counter = 0
 
-    if on_board?(row - 1, col) && contains_mine?(row - 1, col)
-      adjacent_mine_counter += 1
-    elsif on_board?(row + 1, col) && contains_mine?(row + 1, col)
-      adjacent_mine_counter += 1
-    elsif on_board?(row, col - 1) && contains_mine?(row, col - 1)
-      adjacent_mine_counter += 1
-    elsif on_board?(row, col + 1) && contains_mine?(row, col + 1)
-      adjacent_mine_counter += 1
-    elsif on_board?(row - 1, col - 1) && contains_mine?(row - 1, col - 1)
-      adjacent_mine_counter += 1
-    elsif on_board?(row + 1, col + 1) && contains_mine?(row + 1, col + 1)
-      adjacent_mine_counter += 1
-    elsif on_board?(row - 1, col + 1) && contains_mine?(row - 1, col + 1)
-      adjacent_mine_counter += 1
-    elsif on_board?(row + 1, col - 1) && contains_mine?(row + 1, col - 1)
-      adjacent_mine_counter += 1
+    if on_board?(row - 1, col)
+      if contains_mine?(row - 1, col)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row + 1, col)
+      if contains_mine?(row + 1, col)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row, col - 1)
+      if contains_mine?(row, col - 1)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row, col + 1)
+      if contains_mine?(row, col + 1)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row - 1, col - 1)
+      if contains_mine?(row - 1, col - 1)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row + 1, col + 1)
+      if contains_mine?(row + 1, col + 1)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row - 1, col + 1)
+      if contains_mine?(row - 1, col + 1)
+        adjacent_mine_counter += 1
+      end
+    elsif on_board?(row + 1, col - 1)
+      if contains_mine?(row + 1, col - 1)
+        adjacent_mine_counter += 1
+      end
     end
 
     adjacent_mine_counter
@@ -124,15 +164,14 @@ class Minefield
     end
   end
 
-  # Distribute 65 mines amongst the individual minefield cells
+  # Distribute mines amongst the individual minefield cells
   def plant_mines
-    mine_counter = 65
-    while mine_counter > 0
-      rand_num1 = rand(20) + 1
-      rand_num2 = rand(20) + 1
+    while @mine_count > 0
+      rand_num1 = rand(20)
+      rand_num2 = rand(20)
       if !@minefield[rand_num1][rand_num2].contains_mine?
         @minefield[rand_num1][rand_num2].place_mine
-        mine_counter -= 1
+        @mine_count -= 1
       end
     end
   end

@@ -1,5 +1,4 @@
-require "gosu"
-require_relative "minefield"
+require_relative "helper"
 
 class Minesweeper < Gosu::Window
   SCREEN_WIDTH = 1028
