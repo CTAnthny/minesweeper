@@ -14,19 +14,55 @@ class Minefield
 
   # Return true if the cell been uncovered, false otherwise.
   def cell_cleared?(row, col)
-    false
+    @minefield[row][col].revealed?
   end
 
   # Uncover the given cell. If there are no adjacent mines to this cell
   # it should also clear any adjacent cells as well. This is the action
   # when the player clicks on the cell.
   def clear(row, col)
+    @minefield[row][col].reveal!
+
+    if on_board?(row - 1, col) && !contains_mine?(row - 1, col)
+      @minefield[row - 1][col].reveal!
+    elsif on_board?(row + 1, col) && !contains_mine?(row + 1, col)
+      @minefield[row + 1][col].reveal!
+    elsif on_board?(row, col - 1) && !contains_mine?(row, col - 1)
+      @minefield[row][col - 1].reveal!
+    elsif on_board?(row, col + 1) && !contains_mine?(row, col + 1)
+      @minefield[row][col + 1].reveal!
+    elsif on_board?(row - 1, col - 1) && !contains_mine?(row - 1, col - 1)
+      @minefield[row - 1][col - 1].reveal!
+    elsif on_board?(row + 1, col + 1) && !contains_mine?(row + 1, col + 1)
+      @minefield[row + 1][col + 1].reveal!
+    elsif on_board?(row - 1, col + 1) && !contains_mine?(row - 1, col + 1)
+      @minefield[row - 1][col + 1].reveal!
+    elsif on_board?(row + 1, col - 1) && !contains_mine?(row + 1, col - 1)
+      @minefield[row + 1][col - 1].reveal!
+    end
+
+    # dev diagram
+    # 0, 0    0, 1    0, 2
+    # 1, 0   <1, 1>   1, 2
+    # 2, 0    2, 1    2, 2
+  end
+
+  def on_board?(row, col)
+    return row >= 0 && row <= 20 && col >= 0 col <= 20
   end
 
   # Check if any cells have been uncovered that also contained a mine. This is
   # the condition used to see if the player has lost the game.
   def any_mines_detonated?
-    false
+    cells_detonated = false
+    @board.each do |row|
+      row.each do |column|
+        if column.contains_mine? && column.revealed?
+          cells_detonated = true
+        end
+      end
+    end
+    cells_detonated
   end
 
   # Check if all cells that don't have mines have been uncovered. This is the
@@ -45,7 +81,27 @@ class Minefield
 
   # Returns the number of mines that are surrounding this cell (maximum of 8).
   def adjacent_mines(row, col)
-    0
+    adjacent_mine_counter = 0
+
+    if on_board?(row - 1, col) && contains_mine?(row - 1, col)
+      adjacent_mine_counter += 1
+    elsif on_board?(row + 1, col) && contains_mine?(row + 1, col)
+      adjacent_mine_counter += 1
+    elsif on_board?(row, col - 1) && contains_mine?(row, col - 1)
+      adjacent_mine_counter += 1
+    elsif on_board?(row, col + 1) && contains_mine?(row, col + 1)
+      adjacent_mine_counter += 1
+    elsif on_board?(row - 1, col - 1) && contains_mine?(row - 1, col - 1)
+      adjacent_mine_counter += 1
+    elsif on_board?(row + 1, col + 1) && contains_mine?(row + 1, col + 1)
+      adjacent_mine_counter += 1
+    elsif on_board?(row - 1, col + 1) && contains_mine?(row - 1, col + 1)
+      adjacent_mine_counter += 1
+    elsif on_board?(row + 1, col - 1) && contains_mine?(row + 1, col - 1)
+      adjacent_mine_counter += 1
+    end
+
+    adjacent_mine_counter
   end
 
   # Returns true if the given cell contains a mine, false otherwise.
