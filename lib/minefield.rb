@@ -2,6 +2,7 @@ require_relative "helper.rb"
 
 class Minefield
   attr_reader :row_count, :column_count
+  ADJACENT_COORDINATES = [ [-1, 0], [1, 0], [0, -1], [0, 1], [-1, -1], [1, 1], [-1, 1], [1, -1] ]
 
   def initialize(row_count, column_count, mine_count)
     @column_count = column_count
@@ -23,52 +24,13 @@ class Minefield
   def clear(row, col)
     @minefield[row][col].reveal!
 
-    if on_board?(row - 1, col)
-      if !contains_mine?(row - 1, col)
-        @minefield[row - 1][col].reveal!
-        self.adjacent_mines(row - 1, col)
-      end
-    elsif on_board?(row + 1, col)
-      if !contains_mine?(row + 1, col)
-        @minefield[row + 1][col].reveal!
-        self.adjacent_mines(row + 1, col)
-      end
-    elsif on_board?(row, col - 1)
-      if !contains_mine?(row, col - 1)
-        @minefield[row][col - 1].reveal!
-        self.adjacent_mines(row, col - 1)
-      end
-    elsif on_board?(row, col + 1)
-      if !contains_mine?(row, col + 1)
-        @minefield[row][col + 1].reveal!
-        self.adjacent_mines(row, col + 1)
-      end
-    elsif on_board?(row - 1, col - 1)
-      if !contains_mine?(row - 1, col - 1)
-        @minefield[row - 1][col - 1].reveal!
-        self.adjacent_mines(row - 1, col - 1)
-      end
-    elsif on_board?(row + 1, col + 1)
-      if !contains_mine?(row + 1, col + 1)
-        @minefield[row + 1][col + 1].reveal!
-        self.adjacent_mines(row + 1, col + 1)
-      end
-    elsif on_board?(row - 1, col + 1)
-      if !contains_mine?(row - 1, col + 1)
-        @minefield[row - 1][col + 1].reveal!
-        self.adjacent_mines(row - 1, col + 1)
-      end
-    elsif on_board?(row + 1, col - 1)
-      if !contains_mine?(row + 1, col - 1)
-        @minefield[row + 1][col - 1].reveal!
-        self.adjacent_mines(row + 1, col - 1)
+    if self.adjacent_mines(row, col) == 0
+      ADJACENT_COORDINATES.each do |coordinate|
+        if on_board?(row + coordinate[0], col + coordinate[1])
+          clear(row + coordinate[0], col + coordinate[1])
+        end
       end
     end
-
-    # dev diagram
-    # 0, 0    0, 1    0, 2
-    # 1, 0   <1, 1>   1, 2
-    # 2, 0    2, 1    2, 2
   end
 
   def on_board?(row, col)
@@ -106,41 +68,13 @@ class Minefield
   # Returns the number of mines that are surrounding this cell (maximum of 8).
   def adjacent_mines(row, col)
     adjacent_mine_counter = 0
-
-    if on_board?(row - 1, col)
-      if contains_mine?(row - 1, col)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row + 1, col)
-      if contains_mine?(row + 1, col)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row, col - 1)
-      if contains_mine?(row, col - 1)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row, col + 1)
-      if contains_mine?(row, col + 1)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row - 1, col - 1)
-      if contains_mine?(row - 1, col - 1)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row + 1, col + 1)
-      if contains_mine?(row + 1, col + 1)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row - 1, col + 1)
-      if contains_mine?(row - 1, col + 1)
-        adjacent_mine_counter += 1
-      end
-    elsif on_board?(row + 1, col - 1)
-      if contains_mine?(row + 1, col - 1)
-        adjacent_mine_counter += 1
+    ADJACENT_COORDINATES.each do |coordinate|
+      if on_board?(row + coordinate[0], col + coordinate[1])
+        if contains_mine?(row + coordinate[0], col + coordinate[1])
+          adjacent_mine_counter += 1
+        end
       end
     end
-
     adjacent_mine_counter
   end
 
@@ -176,3 +110,94 @@ class Minefield
     end
   end
 end
+
+# old methods:
+# def adjacent_mines(row, col)
+#   adjacent_mine_counter = 0
+#
+#   if on_board?(row - 1, col)
+#     if contains_mine?(row - 1, col)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row + 1, col)
+#     if contains_mine?(row + 1, col)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row, col - 1)
+#     if contains_mine?(row, col - 1)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row, col + 1)
+#     if contains_mine?(row, col + 1)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row - 1, col - 1)
+#     if contains_mine?(row - 1, col - 1)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row + 1, col + 1)
+#     if contains_mine?(row + 1, col + 1)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row - 1, col + 1)
+#     if contains_mine?(row - 1, col + 1)
+#       adjacent_mine_counter += 1
+#     end
+#   elsif on_board?(row + 1, col - 1)
+#     if contains_mine?(row + 1, col - 1)
+#       adjacent_mine_counter += 1
+#     end
+#   end
+#   adjacent_mine_counter
+# end
+
+# def clear(row, col)
+#   @minefield[row][col].reveal!
+#   # if on_board?(row - 1, col)
+#   #   if !contains_mine?(row - 1, col)
+#   #     @minefield[row - 1][col].reveal!
+#   #     self.adjacent_mines(row - 1, col)
+#   #   end
+#   # elsif on_board?(row + 1, col)
+#   #   if !contains_mine?(row + 1, col)
+#   #     @minefield[row + 1][col].reveal!
+#   #     self.adjacent_mines(row + 1, col)
+#   #   end
+#   # elsif on_board?(row, col - 1)
+#   #   if !contains_mine?(row, col - 1)
+#   #     @minefield[row][col - 1].reveal!
+#   #     self.adjacent_mines(row, col - 1)
+#   #   end
+#   # elsif on_board?(row, col + 1)
+#   #   if !contains_mine?(row, col + 1)
+#   #     @minefield[row][col + 1].reveal!
+#   #     self.adjacent_mines(row, col + 1)
+#   #   end
+#   # elsif on_board?(row - 1, col - 1)
+#   #   if !contains_mine?(row - 1, col - 1)
+#   #     @minefield[row - 1][col - 1].reveal!
+#   #     self.adjacent_mines(row - 1, col - 1)
+#   #   end
+#   # elsif on_board?(row + 1, col + 1)
+#   #   if !contains_mine?(row + 1, col + 1)
+#   #     @minefield[row + 1][col + 1].reveal!
+#   #     self.adjacent_mines(row + 1, col + 1)
+#   #   end
+#   # elsif on_board?(row - 1, col + 1)
+#   #   if !contains_mine?(row - 1, col + 1)
+#   #     @minefield[row - 1][col + 1].reveal!
+#   #     self.adjacent_mines(row - 1, col + 1)
+#   #   end
+#   # elsif on_board?(row + 1, col - 1)
+#   #   if !contains_mine?(row + 1, col - 1)
+#   #     @minefield[row + 1][col - 1].reveal!
+#   #     self.adjacent_mines(row + 1, col - 1)
+#   #   end
+#   # end
+#
+#   # dev diagram
+#   # 0, 0    0, 1    0, 2
+#   # 1, 0   <1, 1>   1, 2
+#   # 2, 0    2, 1    2, 2
+#   # [ [0, 0], [0, 1], [0, 2], [1, 0], [1, 1], [1, 2], [2, 0], [2, 1], [2, 2] ]
+# end
