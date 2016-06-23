@@ -1,4 +1,7 @@
-require_relative "helper"
+require 'pry'
+require 'gosu'
+require_relative "cell.rb"
+require_relative "minefield.rb"
 
 class Minesweeper < Gosu::Window
   SCREEN_WIDTH = 1028
