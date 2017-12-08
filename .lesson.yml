@@ -1,7 +1,0 @@
----
-title: "Minesweeper"
-type: "challenge"
-description: "Build a graphical puzzle game."
-tags: "oop, gosu"
-ignore:
-- "minesweeper.md"
