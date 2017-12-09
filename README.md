@@ -15,7 +15,9 @@ The [gosu](http://www.libgosu.org/) library is used to handle the graphics and u
 ### Requirements
 
 * [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+* [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
 * [Gosu](http://www.libgosu.org/)
+* Command line access
 
 To install the `gosu` gem, simply run:
 
