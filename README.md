@@ -8,14 +8,14 @@ Recreation of [Minesweeper](http://en.wikipedia.org/wiki/Minesweeper_(video_game
 
 The [gosu](http://www.libgosu.org/) library is used to handle the graphics and user input within the `Minesweeper` class.
 
-* `minesweeper.rb` contains the code which interacts with the gosu library, handles drawing the minefield on the screen, and facilitates user interaction. You do not need to alter this code.
+* `minesweeper.rb` contains the code which interacts with the gosu library, handles drawing the minefield on the screen, and facilitates user interaction.
 * `minefield.rb` handles the state of the game.
 * `cell.rb` handles the state of each cell in the minefield.
 
 ### Requirements
 
-* Ruby
-* Gosu
+* [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
+* [Gosu](http://www.libgosu.org/)
 
 To install the `gosu` gem, simply run:
 
